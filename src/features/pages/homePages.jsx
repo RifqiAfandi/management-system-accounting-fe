@@ -1,5 +1,5 @@
 import React from "react";
-import StatsGrid from "../Dashboard/StatsGrid.jsx";
+import StatsGrid from "../dashboard/statsGrid.jsx";
 
 const HomePage = () => {
   return (
