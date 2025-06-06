@@ -6,6 +6,39 @@ export const navigationItems = [
     hasDropdown: false,
   },
   {
+    key: "DailyReport",
+    label: "Daily Report",
+    icon: "report",
+    hasDropdown: true,
+    submenu: [
+      {
+        key: "TrafficCustomer",
+        label: "Traffic And Customer",
+        icon: "report",
+      },
+      {
+        key: "SalesCategory",
+        label: "Sales By Category",
+        icon: "report",
+      },
+      {
+        key: "PaymentBreakdown",
+        label: "Payment Method",
+        icon: "report",
+      },
+      {
+        key: "OperationalCost",
+        label: "Operational Cost",
+        icon: "report",
+      },
+      {
+        key: "PerformanceSummary",
+        label: "Performance Summary",
+        icon: "report",
+      },
+    ],
+  },
+  {
     key: "Laporan",
     label: "Laporan",
     icon: "report",

@@ -7,6 +7,11 @@ import {
   CreateUserPage,
   UserListPage,
   SettingsPage,
+  TrafficCustomerPage,
+  SalesCategoryPage,
+  PaymentBreakdownPage,
+  OperationalCostPage,
+  PerformanceSummaryPage,
 } from "../pages/otherPages.jsx";
 
 const ContentRenderer = ({ activeTab }) => {
@@ -14,8 +19,16 @@ const ContentRenderer = ({ activeTab }) => {
     switch (activeTab) {
       case "Home":
         return <HomePage />;
-      case "Laporan":
-        return <LaporanPage />;
+      case "TrafficCustomer":
+        return <TrafficCustomerPage />;
+      case "SalesCategory":
+        return <SalesCategoryPage />;
+      case "PaymentBreakdown":
+        return <PaymentBreakdownPage />;
+      case "OperationalCost":
+        return <OperationalCostPage />;
+      case "PerformanceSummary":
+        return <PerformanceSummaryPage />;
       case "Stok":
         return <StokPage />;
       case "Produk":
