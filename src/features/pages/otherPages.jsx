@@ -1,4 +1,5 @@
 import React from "react";
+import TrafficCustomerPageComponent from "./TrafficCustomerPage.jsx";
 
 // Laporan Page
 export const LaporanPage = () => (
@@ -52,13 +53,8 @@ export const SettingsPage = () => (
   </div>
 );
 
-// Daily Report Pages
-export const TrafficCustomerPage = () => (
-  <div className="welcome-card">
-    <h2 className="welcome-title">📊 Traffic And Customer Data</h2>
-    <p className="welcome-text">View traffic and customer analytics data here.</p>
-  </div>
-);
+// Daily Report Pages - Traffic Customer Page (using separate component)
+export const TrafficCustomerPage = () => <TrafficCustomerPageComponent />;
 
 export const SalesCategoryPage = () => (
   <div className="welcome-card">
