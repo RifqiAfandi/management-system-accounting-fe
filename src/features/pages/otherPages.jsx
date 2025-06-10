@@ -1,6 +1,7 @@
 import React from "react";
 import TrafficCustomerPageComponent from "./TrafficCustomerPage.jsx";
 import SalesCategoryPageComponent from "./SalesCategoryPage.jsx";
+import PaymentBreakdownPageComponent from "./PaymentBreakdownPage.jsx";
 
 // Laporan Page
 export const LaporanPage = () => (
@@ -57,13 +58,7 @@ export const SettingsPage = () => (
 // Daily Report Pages - using separate components
 export const TrafficCustomerPage = () => <TrafficCustomerPageComponent />;
 export const SalesCategoryPage = () => <SalesCategoryPageComponent />;
-
-export const PaymentBreakdownPage = () => (
-  <div className="welcome-card">
-    <h2 className="welcome-title">💳 Payment Method Breakdown</h2>
-    <p className="welcome-text">View payment method distribution analysis.</p>
-  </div>
-);
+export const PaymentBreakdownPage = () => <PaymentBreakdownPageComponent />;
 
 export const OperationalCostPage = () => (
   <div className="welcome-card">
