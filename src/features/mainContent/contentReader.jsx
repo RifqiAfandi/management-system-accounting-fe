@@ -19,8 +19,8 @@ const ContentRenderer = ({ activeTab }) => {
     switch (activeTab) {
       case "Home":
         return <HomePage />;
-      case "TrafficCustomer":
-        return <TrafficCustomerPage />;
+      case "TrafficAndCustomer":
+        return <TrafficAndCustomerPage />;
       case "SalesCategory":
         return <SalesCategoryPage />;
       case "PaymentBreakdown":
