@@ -1,15 +1,13 @@
 import React from "react";
 import HomePage from "../pages/homePages.jsx";
 import {
-  LaporanPage,
   StokPage,
   ProdukPage,
   CreateUserPage,
   UserListPage,
   SettingsPage,
-  TrafficCustomerPage,
+  TrafficAndCustomerPage,
   SalesCategoryPage,
-  PaymentBreakdownPage,
   OperationalCostPage,
   PerformanceSummaryPage,
 } from "../pages/otherPages.jsx";
@@ -23,8 +21,6 @@ const ContentRenderer = ({ activeTab }) => {
         return <TrafficAndCustomerPage />;
       case "SalesCategory":
         return <SalesCategoryPage />;
-      case "PaymentBreakdown":
-        return <PaymentBreakdownPage />;
       case "OperationalCost":
         return <OperationalCostPage />;
       case "PerformanceSummary":

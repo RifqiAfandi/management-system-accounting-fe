@@ -1,7 +1,8 @@
 import React from "react";
-import TrafficCustomerPageComponent from "./TrafficCustomerPage.jsx";
-import SalesCategoryPageComponent from "./SalesCategoryPage.jsx";
-import PaymentBreakdownPageComponent from "./PaymentBreakdownPage.jsx";
+import TrafficAndCustomerPageComponent from "./TrafficAndCustomerPage.jsx";
+
+// Traffic and Customer Page
+export const TrafficAndCustomerPage = () => <TrafficAndCustomerPageComponent />;
 
 // Laporan Page
 export const LaporanPage = () => (
@@ -55,11 +56,15 @@ export const SettingsPage = () => (
   </div>
 );
 
-// Daily Report Pages - using separate components
-export const TrafficCustomerPage = () => <TrafficCustomerPageComponent />;
-export const SalesCategoryPage = () => <SalesCategoryPageComponent />;
-export const PaymentBreakdownPage = () => <PaymentBreakdownPageComponent />;
+// Sales Category Page
+export const SalesCategoryPage = () => (
+  <div className="welcome-card">
+    <h2 className="welcome-title">📊 Sales Category</h2>
+    <p className="welcome-text">View and analyze sales by category.</p>
+  </div>
+);
 
+// Operational Cost Page
 export const OperationalCostPage = () => (
   <div className="welcome-card">
     <h2 className="welcome-title">💰 Daily Operational Cost</h2>
@@ -67,6 +72,7 @@ export const OperationalCostPage = () => (
   </div>
 );
 
+// Performance Summary Page
 export const PerformanceSummaryPage = () => (
   <div className="welcome-card">
     <h2 className="welcome-title">📋 Daily Performance Summary</h2>

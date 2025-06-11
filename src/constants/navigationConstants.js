@@ -10,20 +10,13 @@ export const navigationItems = [
     label: "Daily Report",
     icon: "report",
     hasDropdown: true,
-    submenu: [
-      {
-        key: "TrafficCustomer",
+    submenu: [      {
+        key: "TrafficAndCustomer",
         label: "Traffic And Customer",
         icon: "report",
-      },
-      {
+      },      {
         key: "SalesCategory",
         label: "Sales By Category",
-        icon: "report",
-      },
-      {
-        key: "PaymentBreakdown",
-        label: "Payment Method",
         icon: "report",
       },
       {
