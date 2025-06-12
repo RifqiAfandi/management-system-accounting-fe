@@ -3,7 +3,7 @@ import Sidebar from "./sidebar/sidebar.jsx";
 import MainContent from "./mainContent/mainContent.jsx";
 import "./adminPage.css";
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ user, onLogout }) => {
   const [activeTab, setActiveTab] = useState("Home");
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -25,7 +25,12 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = () => {
-    window.location.href = "/login";
+    if (onLogout) {
+      onLogout();
+    } else {
+      // Fallback untuk backward compatibility
+      window.location.href = "/login";
+    }
   };
 
   return (
@@ -39,7 +44,7 @@ const AdminDashboard = () => {
         onToggleUserDropdown={toggleUserDropdown}
         onLogout={handleLogout}
       />
-      <MainContent activeTab={activeTab} />
+      <MainContent activeTab={activeTab} user={user} />
     </div>
   );
 };

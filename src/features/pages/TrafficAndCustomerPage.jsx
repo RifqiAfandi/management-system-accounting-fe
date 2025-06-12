@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import AuthError from '../../components/AuthError.jsx';
 
 const TrafficAndCustomerPage = () => {
   const [data, setData] = useState([]);
@@ -9,13 +10,32 @@ const TrafficAndCustomerPage = () => {
 
   // Base API URL - adjust according to your backend URL
   const API_BASE_URL = 'http://localhost:3000/api';
-
   // Fetch data by date
   const fetchDataByDate = async (date) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}/traffic-and-customer/by-date?date=${date}`);
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error('No authentication token found. Please login.');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/traffic-and-customer/by-date?date=${date}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Authentication failed. Please login again.');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const result = await response.json();
       
       if (result.success) {
@@ -25,21 +45,35 @@ const TrafficAndCustomerPage = () => {
         setData([]);
       }
     } catch (err) {
-      setError('Failed to fetch data');
+      setError(err.message || 'Failed to fetch data');
       setData([]);
     } finally {
       setLoading(false);
     }
   };
-
   // Fetch available dates
   const fetchAvailableDates = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/traffic-and-customer/dates`);
-      const result = await response.json();
+      const token = localStorage.getItem('token');
       
-      if (result.success) {
-        setAvailableDates(result.data);
+      if (!token) {
+        console.warn('No token found for fetching dates');
+        return;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/traffic-and-customer/dates`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setAvailableDates(result.data);
+        }
+      } else if (response.status === 401) {
+        console.error('Authentication failed when fetching dates');
       }
     } catch (err) {
       console.error('Failed to fetch available dates:', err);
@@ -98,7 +132,6 @@ const TrafficAndCustomerPage = () => {
   const formatPercentage = (percentage) => {
     return `${parseFloat(percentage).toFixed(2)}%`;
   };
-
   // Effect to fetch data when date changes
   useEffect(() => {
     fetchDataByDate(selectedDate);
@@ -108,6 +141,19 @@ const TrafficAndCustomerPage = () => {
   useEffect(() => {
     fetchAvailableDates();
   }, []);
+
+  const handleLoginRedirect = () => {
+    // Clear invalid tokens
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    // Trigger app re-render by dispatching a custom event
+    window.dispatchEvent(new CustomEvent('auth-logout'));
+  };
+
+  const handleRetry = () => {
+    setError(null);
+    fetchDataByDate(selectedDate);
+  };
 
   return (
     <div className="admin-content">
@@ -160,13 +206,13 @@ const TrafficAndCustomerPage = () => {
           <div className="loading-spinner"></div>
           <p>Loading data...</p>
         </div>
-      )}
-
-      {/* Error State */}
+      )}      {/* Error State */}
       {error && (
-        <div className="error-container">
-          <p className="error-message">Error: {error}</p>
-        </div>
+        <AuthError 
+          error={error}
+          onRetry={handleRetry}
+          onLoginRedirect={handleLoginRedirect}
+        />
       )}
 
       {/* Data Table */}

@@ -637,3 +637,88 @@
     padding: 2px var(--space-xs);
   }
 }
+
+/* Auth Error Component */
+.auth-error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  padding: var(--space-xl);
+}
+
+.error-content {
+  text-align: center;
+  background: white;
+  padding: var(--space-2xl);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--neutral-200);
+  max-width: 400px;
+  width: 100%;
+}
+
+.error-content .error-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--error-light);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--error-color);
+  font-size: 2rem;
+  margin: 0 auto var(--space-lg);
+}
+
+.error-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--neutral-900);
+  margin-bottom: var(--space-sm);
+}
+
+.error-message {
+  color: var(--neutral-600);
+  margin-bottom: var(--space-xl);
+  line-height: 1.5;
+}
+
+.error-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.error-actions .btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+.error-actions .btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.error-actions .btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.error-actions .btn-secondary {
+  background: var(--neutral-100);
+  color: var(--neutral-700);
+  border: 1px solid var(--neutral-300);
+}
+
+.error-actions .btn-secondary:hover {
+  background: var(--neutral-200);
+  transform: translateY(-1px);
+}

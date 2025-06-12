@@ -14,6 +14,12 @@ export const renderIcon = (iconName) => {
     close: "✕",
     chevronRight: "▶",
     chevronDown: "▼",
+    lock: "🔒",
+    alertCircle: "⚠️",
+    login: "🔑",
+    refreshCw: "🔄",
+    eye: "👁️",
+    eyeOff: "🙈",
   };
   return <span className="nav-icon">{icons[iconName] || "•"}</span>;
 };
