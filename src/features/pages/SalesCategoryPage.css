@@ -1,12 +1,12 @@
-/* TrafficAndCustomerPage.css */
+/* SalesCategoryPage.css */
 .traffic-customer-page {
-  padding: 0.1rem 1rem;
+  padding: 0.25rem 1rem;
   max-width: 100%;
   margin: 0;
 }
 
 .page-header {
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
   text-align: center;
 }
 
@@ -14,7 +14,7 @@
   font-size: 1.6rem;
   font-weight: 600;
   color: #2c3e50;
-  margin: 0 0 0.1rem 0;
+  margin: 0 0 0.25rem 0;
 }
 
 .page-subtitle {
@@ -26,8 +26,8 @@
 .date-navigation {
   background: white;
   border-radius: 8px;
-  padding: 0.5rem;
-  margin-bottom: 0.3rem;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -35,7 +35,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
 }
 
 .date-display h3 {
@@ -114,7 +114,7 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
   border: 2px solid #dee2e6;
 }
 
@@ -126,7 +126,7 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
-  border: 2px solid #333;
+  border: 1px solid #dee2e6;
 }
 
 .data-table th {
@@ -135,14 +135,13 @@
   font-weight: 600;
   text-align: center;
   padding: 0.75rem;
-  border: 2px solid #333;
-  vertical-align: middle;
+  border: 1px solid #dee2e6;
 }
 
 .data-table td {
   text-align: center;
   padding: 0.6rem;
-  border: 2px solid #333;
+  border: 1px solid #dee2e6;
   vertical-align: middle;
 }
 
@@ -158,32 +157,26 @@
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: 500;
-  text-align: center;
-  min-width: 60px;
 }
 
 .number-cell {
   font-weight: 500;
   color: #2c3e50;
-  text-align: center;
 }
 
 .percentage-cell {
   font-weight: 500;
   color: #28a745;
-  text-align: center;
 }
 
 .description-cell {
   color: #6c757d;
   font-style: italic;
-  text-align: center;
 }
 
 .date-cell {
   color: #6c757d;
   font-size: 0.85rem;
-  text-align: center;
 }
 
 .summary-stats {
@@ -238,7 +231,7 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .traffic-customer-page {
-    padding: 0.5rem;
+    padding: 0.25rem;
   }
   
   .date-controls {
@@ -260,6 +253,6 @@
   
   .data-table th,
   .data-table td {
-    padding: 0.5rem 0.25rem;
+    padding: 0.4rem 0.2rem;
   }
 }

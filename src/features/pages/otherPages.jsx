@@ -1,8 +1,12 @@
 import React from "react";
 import TrafficAndCustomerPageComponent from "./TrafficAndCustomerPage.jsx";
+import SalesCategoryPageComponent from "./SalesCategoryPage.jsx";
 
 // Traffic and Customer Page
 export const TrafficAndCustomerPage = () => <TrafficAndCustomerPageComponent />;
+
+// Sales Category Page
+export const SalesCategoryPage = () => <SalesCategoryPageComponent />;
 
 // Laporan Page
 export const LaporanPage = () => (
@@ -53,14 +57,6 @@ export const SettingsPage = () => (
   <div className="welcome-card">
     <h2 className="welcome-title">⚙️ Pengaturan</h2>
     <p className="welcome-text">Kelola pengaturan sistem di sini.</p>
-  </div>
-);
-
-// Sales Category Page
-export const SalesCategoryPage = () => (
-  <div className="welcome-card">
-    <h2 className="welcome-title">📊 Sales Category</h2>
-    <p className="welcome-text">View and analyze sales by category.</p>
   </div>
 );
 

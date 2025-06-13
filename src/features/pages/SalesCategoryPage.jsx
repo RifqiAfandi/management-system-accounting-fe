@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import AuthError from '../../components/AuthError.jsx';
-import './TrafficAndCustomerPage.css';
+import './SalesCategoryPage.css';
 
-const TrafficAndCustomerPage = () => {
+const SalesCategoryPage = () => {
   const [data, setData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [availableDates, setAvailableDates] = useState([]);
@@ -11,6 +11,7 @@ const TrafficAndCustomerPage = () => {
 
   // Base API URL - adjust according to your backend URL
   const API_BASE_URL = 'http://localhost:3000/api';
+  
   // Fetch data by date
   const fetchDataByDate = async (date) => {
     setLoading(true);
@@ -22,7 +23,7 @@ const TrafficAndCustomerPage = () => {
         throw new Error('No authentication token found. Please login.');
       }
 
-      const response = await fetch(`${API_BASE_URL}/traffic-and-customer/by-date?date=${date}`, {
+      const response = await fetch(`${API_BASE_URL}/sales-category/by-date?date=${date}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -38,49 +39,52 @@ const TrafficAndCustomerPage = () => {
       }
 
       const result = await response.json();
-        if (result.success) {
+      if (result.success) {
         setData(result.data);
       } else {
-        setError(result.message);        // Set sample data for demonstration if no real data available
+        setError(result.message);
+        // Set sample data for demonstration if no real data available
         setData([
           {
             id: 1,
-            timeShift: "Morning",
-            customerCount: 130,
-            transaction: 100,
+            timeShift: "Food & Beverages",
+            customerCount: 2500000,
+            transaction: 150,
             conversionRate: 76.92,
-            description: "Morning shift yesterday",
+            description: "Food & Beverages category sales",
             createdAt: new Date().toISOString()
           },
           {
             id: 2,
-            timeShift: "Evening",
-            customerCount: 180,
-            transaction: 150,
+            timeShift: "Electronics",
+            customerCount: 3200000,
+            transaction: 120,
             conversionRate: 83.33,
-            description: "Evening shift yesterday",
+            description: "Electronics category sales",
             createdAt: new Date().toISOString()
           }
         ]);
-      }    } catch (err) {
-      setError(err.message || 'Failed to fetch data');      // Set sample data for demonstration when API is not available
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to fetch data');
+      // Set sample data for demonstration when API is not available
       setData([
         {
           id: 1,
-          timeShift: "Morning",
-          customerCount: 130,
-          transaction: 100,
+          timeShift: "Food & Beverages",
+          customerCount: 2500000,
+          transaction: 150,
           conversionRate: 76.92,
-          description: "Morning shift yesterday",
+          description: "Food & Beverages category sales",
           createdAt: new Date().toISOString()
         },
         {
           id: 2,
-          timeShift: "Evening",
-          customerCount: 180,
-          transaction: 150,
+          timeShift: "Electronics",
+          customerCount: 3200000,
+          transaction: 120,
           conversionRate: 83.33,
-          description: "Evening shift yesterday",
+          description: "Electronics category sales",
           createdAt: new Date().toISOString()
         }
       ]);
@@ -88,6 +92,7 @@ const TrafficAndCustomerPage = () => {
       setLoading(false);
     }
   };
+
   // Fetch available dates
   const fetchAvailableDates = async () => {
     try {
@@ -98,7 +103,7 @@ const TrafficAndCustomerPage = () => {
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/traffic-and-customer/dates`, {
+      const response = await fetch(`${API_BASE_URL}/sales-category/dates`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -164,13 +169,12 @@ const TrafficAndCustomerPage = () => {
   const formatNumber = (number) => {
     return new Intl.NumberFormat('id-ID').format(number);
   };
+
   // Format percentage
   const formatPercentage = (percentage) => {
-    if (percentage === null || percentage === undefined || percentage === '') {
-      return '0.00%';
-    }
     return `${parseFloat(percentage).toFixed(2)}%`;
   };
+
   // Effect to fetch data when date changes
   useEffect(() => {
     fetchDataByDate(selectedDate);
@@ -193,11 +197,12 @@ const TrafficAndCustomerPage = () => {
     setError(null);
     fetchDataByDate(selectedDate);
   };
+
   return (
     <div className="traffic-customer-page">
       <div className="page-header">
-        <h1 className="page-title">Traffic & Customer Data</h1>
-        <p className="page-subtitle">Data lalu lintas dan pelanggan per shift</p>
+        <h1 className="page-title">Sales by Category Data</h1>
+        <p className="page-subtitle">Data penjualan berdasarkan kategori produk</p>
       </div>
 
       {/* Date Navigation */}
@@ -242,7 +247,9 @@ const TrafficAndCustomerPage = () => {
           <div className="loading-spinner"></div>
           <p>Loading data...</p>
         </div>
-      )}      {/* Error State */}
+      )}
+
+      {/* Error State */}
       {error && (
         <AuthError 
           error={error}
@@ -257,7 +264,7 @@ const TrafficAndCustomerPage = () => {
           {data.length === 0 ? (
             <div className="no-data-container">
               <p className="no-data-message">
-                No traffic and customer data available for {formatDate(selectedDate)}
+                No sales category data available for {formatDate(selectedDate)}
               </p>
             </div>
           ) : (
@@ -265,26 +272,27 @@ const TrafficAndCustomerPage = () => {
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>Time Shift</th>
-                    <th>Customer Count</th>
+                    <th>Category</th>
+                    <th>Revenue (IDR)</th>
                     <th>Transaction</th>
                     <th>Conversion Rate</th>
                     <th>Description</th>
                     <th>Created At</th>
                   </tr>
                 </thead>
-                <tbody>                  {data.map((item, index) => (
+                <tbody>
+                  {data.map((item, index) => (
                     <tr key={item.id || index}>
                       <td>
                         <span className="time-shift-badge">
-                          {item.timeShift || 'N/A'}
+                          {item.timeShift}
                         </span>
                       </td>
                       <td className="number-cell">
-                        {formatNumber(item.customerCount || 0)}
+                        {formatNumber(item.customerCount)}
                       </td>
                       <td className="number-cell">
-                        {formatNumber(item.transaction || 0)}
+                        {formatNumber(item.transaction)}
                       </td>
                       <td className="percentage-cell">
                         {formatPercentage(item.conversionRate)}
@@ -309,7 +317,7 @@ const TrafficAndCustomerPage = () => {
         <div className="summary-stats">
           <div className="stats-grid">
             <div className="stat-card">
-              <h4>Total Customers</h4>
+              <h4>Total Revenue</h4>
               <p className="stat-value">
                 {formatNumber(data.reduce((sum, item) => sum + parseFloat(item.customerCount), 0))}
               </p>
@@ -335,4 +343,4 @@ const TrafficAndCustomerPage = () => {
   );
 };
 
-export default TrafficAndCustomerPage;
+export default SalesCategoryPage;
