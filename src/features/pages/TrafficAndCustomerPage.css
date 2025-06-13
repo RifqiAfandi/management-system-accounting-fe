@@ -147,6 +147,7 @@
   justify-content: center;
   align-items: center;
   display: table-cell;
+  height: 50px;
 }
 
 .data-table td {
@@ -156,6 +157,7 @@
   vertical-align: middle;
   justify-content: center;
   align-items: center;
+  height: 60px;
 }
 
 .data-table tbody tr:hover {
