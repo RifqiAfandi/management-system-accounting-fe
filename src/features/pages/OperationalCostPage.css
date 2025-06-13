@@ -159,8 +159,7 @@
   padding: var(--space-sm);
   border: 1px solid var(--neutral-300);
   font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
   vertical-align: middle;
   height: 50px;
 }
@@ -256,8 +255,7 @@
   margin: 0 0 var(--space-xs) 0;
   font-size: 0.9rem;
   color: var(--neutral-600) !important;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
   font-weight: 500;
 }
 
