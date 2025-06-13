@@ -1,11 +1,6 @@
 import React from "react";
 import HomePage from "../pages/homePages.jsx";
 import {
-  StokPage,
-  ProdukPage,
-  CreateUserPage,
-  UserListPage,
-  SettingsPage,
   TrafficAndCustomerPage,
   SalesCategoryPage,
   OperationalCostPage,
@@ -25,16 +20,6 @@ const ContentRenderer = ({ activeTab }) => {
         return <OperationalCostPage />;
       case "PerformanceSummary":
         return <PerformanceSummaryPage />;
-      case "Stok":
-        return <StokPage />;
-      case "Produk":
-        return <ProdukPage />;
-      case "CreateUser":
-        return <CreateUserPage />;
-      case "UserList":
-        return <UserListPage />;
-      case "Settings":
-        return <SettingsPage />;
       default:
         return (
           <div className="welcome-card">
