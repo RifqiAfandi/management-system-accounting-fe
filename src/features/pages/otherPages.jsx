@@ -1,6 +1,7 @@
 import React from "react";
 import TrafficAndCustomerPageComponent from "./TrafficAndCustomerPage.jsx";
 import SalesCategoryPageComponent from "./SalesCategoryPage.jsx";
+import OperationalCostPageComponent from "./OperationalCostPage.jsx";
 
 // Traffic and Customer Page
 export const TrafficAndCustomerPage = () => <TrafficAndCustomerPageComponent />;
@@ -9,12 +10,7 @@ export const TrafficAndCustomerPage = () => <TrafficAndCustomerPageComponent />;
 export const SalesCategoryPage = () => <SalesCategoryPageComponent />;
 
 // Operational Cost Page
-export const OperationalCostPage = () => (
-  <div className="welcome-card">
-    <h2 className="welcome-title">💰 Daily Operational Cost</h2>
-    <p className="welcome-text">Track and analyze daily operational expenses.</p>
-  </div>
-);
+export const OperationalCostPage = () => <OperationalCostPageComponent />;
 
 // Performance Summary Page
 export const PerformanceSummaryPage = () => (
