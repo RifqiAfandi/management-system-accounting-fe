@@ -22,6 +22,7 @@ export const renderIcon = (iconName) => {
     eyeOff: "🙈",
     calendar: "📅",
     calendarMonth: "🗓️",
+    edit: "✏️",
   };
   return <span className="nav-icon">{icons[iconName] || "•"}</span>;
 };

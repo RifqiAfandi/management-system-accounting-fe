@@ -6,6 +6,12 @@ export const navigationItems = [
     hasDropdown: false,
   },
   {
+    key: "ReportEntry",
+    label: "Report Entry",
+    icon: "edit",
+    hasDropdown: false,
+  },
+  {
     key: "DailyReport",
     label: "Daily Report",
     icon: "report",

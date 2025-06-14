@@ -1,5 +1,6 @@
 import React from "react";
 import HomePage from "../pages/homePages.jsx";
+import ReportEntryPage from "../pages/ReportEntryPage.jsx";
 import {
   TrafficAndCustomerPage,
   SalesCategoryPage,
@@ -12,6 +13,8 @@ const ContentRenderer = ({ activeTab }) => {
     switch (activeTab) {
       case "Home":
         return <HomePage />;
+      case "ReportEntry":
+        return <ReportEntryPage />;
       case "TrafficAndCustomer":
         return <TrafficAndCustomerPage />;
       case "SalesCategory":

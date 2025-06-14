@@ -7,6 +7,8 @@ const MainContent = ({ activeTab, user }) => {  const getHeaderTitle = (tab) => 
         return "Create User";
       case "UserList":
         return "User List";
+      case "ReportEntry":
+        return "Report Entry";
       case "WeeklyReport":
         return "Weekly Report";
       case "MonthlyReport":
