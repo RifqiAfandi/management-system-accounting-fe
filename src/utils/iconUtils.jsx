@@ -20,6 +20,8 @@ export const renderIcon = (iconName) => {
     refreshCw: "🔄",
     eye: "👁️",
     eyeOff: "🙈",
+    calendar: "📅",
+    calendarMonth: "🗓️",
   };
   return <span className="nav-icon">{icons[iconName] || "•"}</span>;
 };

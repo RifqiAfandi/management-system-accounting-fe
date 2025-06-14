@@ -10,11 +10,13 @@ export const navigationItems = [
     label: "Daily Report",
     icon: "report",
     hasDropdown: true,
-    submenu: [      {
+    submenu: [
+      {
         key: "TrafficAndCustomer",
         label: "Traffic And Customer",
         icon: "report",
-      },      {
+      },
+      {
         key: "SalesCategory",
         label: "Sales By Category",
         icon: "report",
@@ -32,45 +34,15 @@ export const navigationItems = [
     ],
   },
   {
-    key: "Laporan",
-    label: "Laporan",
-    icon: "report",
+    key: "WeeklyReport",
+    label: "Weekly Report",
+    icon: "calendar",
     hasDropdown: false,
   },
   {
-    key: "Stok",
-    label: "Stok",
-    icon: "stock",
-    hasDropdown: false,
-  },
-  {
-    key: "Produk",
-    label: "Produk",
-    icon: "product",
-    hasDropdown: false,
-  },
-  {
-    key: "Users",
-    label: "Users",
-    icon: "users",
-    hasDropdown: true,
-    submenu: [
-      {
-        key: "CreateUser",
-        label: "Create User",
-        icon: "userPlus",
-      },
-      {
-        key: "UserList",
-        label: "User List",
-        icon: "users",
-      },
-    ],
-  },
-  {
-    key: "Settings",
-    label: "Settings",
-    icon: "settings",
+    key: "MonthlyReport",
+    label: "Monthly Report",
+    icon: "calendarMonth",
     hasDropdown: false,
   },
 ];

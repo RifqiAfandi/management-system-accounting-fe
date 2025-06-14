@@ -20,6 +20,20 @@ const ContentRenderer = ({ activeTab }) => {
         return <OperationalCostPage />;
       case "PerformanceSummary":
         return <PerformanceSummaryPage />;
+      case "WeeklyReport":
+        return (
+          <div className="welcome-card">
+            <h2>Weekly Report</h2>
+            <p className="welcome-text">Weekly report functionality coming soon...</p>
+          </div>
+        );
+      case "MonthlyReport":
+        return (
+          <div className="welcome-card">
+            <h2>Monthly Report</h2>
+            <p className="welcome-text">Monthly report functionality coming soon...</p>
+          </div>
+        );
       default:
         return (
           <div className="welcome-card">

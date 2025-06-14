@@ -1,13 +1,16 @@
 import React from "react";
 import ContentRenderer from "./contentReader.jsx";
 
-const MainContent = ({ activeTab, user }) => {
-  const getHeaderTitle = (tab) => {
+const MainContent = ({ activeTab, user }) => {  const getHeaderTitle = (tab) => {
     switch (tab) {
       case "CreateUser":
         return "Create User";
       case "UserList":
         return "User List";
+      case "WeeklyReport":
+        return "Weekly Report";
+      case "MonthlyReport":
+        return "Monthly Report";
       default:
         return tab;
     }
