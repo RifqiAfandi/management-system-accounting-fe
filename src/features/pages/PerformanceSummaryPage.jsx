@@ -13,7 +13,7 @@ const PerformanceSummaryPage = () => {
 
   // Base API URL - adjust according to your backend URL
   const API_BASE_URL = 'http://localhost:3000/api';
-    // Fetch performance summary data
+  // Fetch performance summary data
   const fetchDataByDate = async (date) => {
     setLoading(true);
     setError(null);
@@ -41,84 +41,14 @@ const PerformanceSummaryPage = () => {
 
       const result = await response.json();
       if (result.success) {
-        setData(result.data);
+        setData(result.data || []);
       } else {
         setError(result.message);
-        // Set sample data for demonstration if no real data available
-        setData([
-          {
-            id: 1,
-            dailyPerformanceSummaryMetricId: 1,
-            dailyPerformanceSummaryTargetId: 1,
-            actual: 850000,
-            achivement: 85.5,
-            status: "On Track",
-            createdAt: new Date().toISOString(),
-            metric: { id: 1, metricName: "Daily Revenue" },
-            target: { id: 1, dailyTargetValue: 1000000 }
-          },
-          {
-            id: 2,
-            dailyPerformanceSummaryMetricId: 2,
-            dailyPerformanceSummaryTargetId: 2,
-            actual: 120,
-            achivement: 95.2,
-            status: "Exceeded",
-            createdAt: new Date().toISOString(),
-            metric: { id: 2, metricName: "Customer Satisfaction" },
-            target: { id: 2, dailyTargetValue: 126 }
-          },
-          {
-            id: 3,
-            dailyPerformanceSummaryMetricId: 3,
-            dailyPerformanceSummaryTargetId: 3,
-            actual: 75,
-            achivement: 68.2,
-            status: "Below Target",
-            createdAt: new Date().toISOString(),
-            metric: { id: 3, metricName: "Sales Conversion Rate" },
-            target: { id: 3, dailyTargetValue: 110 }
-          }
-        ]);
+        setData([]);
       }
     } catch (err) {
       setError(err.message || 'Failed to fetch performance summary data');
-      // Set sample data for demonstration when API is not available
-      setData([
-        {
-          id: 1,
-          dailyPerformanceSummaryMetricId: 1,
-          dailyPerformanceSummaryTargetId: 1,
-          actual: 850000,
-          achivement: 85.5,
-          status: "On Track",
-          createdAt: new Date().toISOString(),
-          metric: { id: 1, metricName: "Daily Revenue" },
-          target: { id: 1, dailyTargetValue: 1000000 }
-        },
-        {
-          id: 2,
-          dailyPerformanceSummaryMetricId: 2,
-          dailyPerformanceSummaryTargetId: 2,
-          actual: 120,
-          achivement: 95.2,
-          status: "Exceeded",
-          createdAt: new Date().toISOString(),
-          metric: { id: 2, metricName: "Customer Satisfaction" },
-          target: { id: 2, dailyTargetValue: 126 }
-        },
-        {
-          id: 3,
-          dailyPerformanceSummaryMetricId: 3,
-          dailyPerformanceSummaryTargetId: 3,
-          actual: 75,
-          achivement: 68.2,
-          status: "Below Target",
-          createdAt: new Date().toISOString(),
-          metric: { id: 3, metricName: "Sales Conversion Rate" },
-          target: { id: 3, dailyTargetValue: 110 }
-        }
-      ]);
+      setData([]);
     } finally {
       setLoading(false);
     }
