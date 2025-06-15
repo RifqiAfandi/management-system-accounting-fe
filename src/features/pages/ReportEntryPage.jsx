@@ -19,12 +19,8 @@ const ReportEntryPage = () => {
       description: ''
     }
   });
-
   const [salesCategoryData, setSalesCategoryData] = useState({
-    salesCategoryId: '',
-    amount: '',
-    quantity: '',
-    description: ''
+    categories: [] // Will be populated with available categories and their data
   });
 
   const [operationalCostData, setOperationalCostData] = useState({
@@ -44,7 +40,6 @@ const ReportEntryPage = () => {
     fetchSalesCategories();
     fetchOperationalCostTypes();
   }, []);
-
   const fetchSalesCategories = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -55,7 +50,20 @@ const ReportEntryPage = () => {
       if (response.ok) {
         const result = await response.json();
         if (result.success) {
-          setSalesCategories(result.data || []);
+          const categories = result.data || [];
+          setSalesCategories(categories);
+          
+          // Initialize sales category data with empty values for each category
+          setSalesCategoryData({
+            categories: categories.map(category => ({
+              id: category.id,
+              nameCategory: category.nameCategory,
+              qtyTerjual: '',
+              revenue: '',
+              hpp: '',
+              margin: 0
+            }))
+          });
         }
       }
     } catch (err) {
@@ -79,7 +87,6 @@ const ReportEntryPage = () => {
       console.error('Failed to fetch operational cost types:', err);
     }
   };
-
   // Submit functions for each step
   const submitTrafficData = async () => {
     setLoading(true);
@@ -87,62 +94,77 @@ const ReportEntryPage = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const currentDate = new Date().toISOString().split('T')[0];
       
-      // Prepare data for both shifts
+      // Prepare data for both shifts with correct timeShift format
       const shift1Data = {
-        timeShift: "Shift 1 (07:00-15:00)",
-        customerCount: parseInt(trafficData.shift1.customerCount),
-        transaction: parseInt(trafficData.shift1.transaction),
-        description: trafficData.shift1.description,
-        date: currentDate,
-        conversionRate: trafficData.shift1.customerCount && trafficData.shift1.transaction 
-          ? ((parseFloat(trafficData.shift1.transaction) / parseFloat(trafficData.shift1.customerCount)) * 100).toFixed(2)
-          : 0
+        timeShift: "07.00-15.00", // Backend expects this format
+        customerCount: parseInt(trafficData.shift1.customerCount) || 0,
+        transaction: parseInt(trafficData.shift1.transaction) || 0,
+        description: trafficData.shift1.description || null
       };
 
       const shift2Data = {
-        timeShift: "Shift 2 (15:00-23:00)",
-        customerCount: parseInt(trafficData.shift2.customerCount),
-        transaction: parseInt(trafficData.shift2.transaction),
-        description: trafficData.shift2.description,
-        date: currentDate,
-        conversionRate: trafficData.shift2.customerCount && trafficData.shift2.transaction 
-          ? ((parseFloat(trafficData.shift2.transaction) / parseFloat(trafficData.shift2.customerCount)) * 100).toFixed(2)
-          : 0
+        timeShift: "15.00-23.00", // Backend expects this format
+        customerCount: parseInt(trafficData.shift2.customerCount) || 0,
+        transaction: parseInt(trafficData.shift2.transaction) || 0,
+        description: trafficData.shift2.description || null
       };
+
+      // Only submit data for shifts that have values
+      const submissionPromises = [];
       
-      // Submit both shifts
-      const response1 = await fetch(`${API_BASE_URL}/traffic-and-customer`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(shift1Data)
-      });
-
-      const response2 = await fetch(`${API_BASE_URL}/traffic-and-customer`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(shift2Data)
-      });
-
-      if (!response1.ok || !response2.ok) {
-        throw new Error('Failed to submit traffic data');
+      if (shift1Data.customerCount > 0 || shift1Data.transaction > 0) {
+        submissionPromises.push(
+          fetch(`${API_BASE_URL}/traffic-and-customer`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(shift1Data)
+          })
+        );
       }
 
-      const result1 = await response1.json();
-      const result2 = await response2.json();
+      if (shift2Data.customerCount > 0 || shift2Data.transaction > 0) {
+        submissionPromises.push(
+          fetch(`${API_BASE_URL}/traffic-and-customer`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(shift2Data)
+          })
+        );
+      }
+
+      if (submissionPromises.length === 0) {
+        throw new Error('Please enter data for at least one shift');
+      }
+
+      // Wait for all submissions to complete
+      const responses = await Promise.all(submissionPromises);
       
-      if (result1.success && result2.success) {
-        setSuccess('Both shifts traffic and customer data saved successfully!');
+      // Check if all responses are OK
+      for (const response of responses) {
+        if (!response.ok) {
+          const errorResult = await response.json();
+          throw new Error(errorResult.message || 'Failed to submit traffic data');
+        }
+      }
+
+      // Parse all results
+      const results = await Promise.all(responses.map(response => response.json()));
+      
+      // Check if all results are successful
+      const allSuccessful = results.every(result => result.success);
+      
+      if (allSuccessful) {
+        setSuccess('Traffic and Customer data saved successfully!');
         setCurrentStep(2);
       } else {
-        throw new Error('Failed to submit traffic data for one or both shifts');
+        throw new Error('Failed to submit traffic data for one or more shifts');
       }
     } catch (err) {
       setError(err.message);
@@ -150,32 +172,68 @@ const ReportEntryPage = () => {
       setLoading(false);
     }
   };
-
   const submitSalesCategoryData = async () => {
     setLoading(true);
     setError(null);
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/sales-by-category`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(salesCategoryData)
+      
+      // Filter categories that have data and prepare submissions
+      const categoriesWithData = salesCategoryData.categories.filter(category => 
+        category.qtyTerjual && category.revenue && category.hpp
+      );
+      
+      if (categoriesWithData.length === 0) {
+        throw new Error('Please enter data for at least one category');
+      }
+      
+      // Calculate margin for each category and prepare data
+      const submissionPromises = categoriesWithData.map(category => {
+        const revenue = parseFloat(category.revenue) || 0;
+        const hpp = parseFloat(category.hpp) || 0;
+        const margin = revenue > 0 ? ((revenue - hpp) / revenue) * 100 : 0;
+        
+        const submissionData = {
+          salesCategoryId: category.id,
+          qtyTerjual: parseFloat(category.qtyTerjual) || 0,
+          revenue: revenue,
+          hpp: hpp,
+          margin: margin
+        };
+        
+        return fetch(`${API_BASE_URL}/sales-by-category`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(submissionData)
+        });
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to submit sales category data');
+      // Wait for all submissions to complete
+      const responses = await Promise.all(submissionPromises);
+      
+      // Check if all responses are OK
+      for (const response of responses) {
+        if (!response.ok) {
+          const errorResult = await response.json();
+          throw new Error(errorResult.message || 'Failed to submit sales category data');
+        }
       }
 
-      const result = await response.json();
-      if (result.success) {
+      // Parse all results
+      const results = await Promise.all(responses.map(response => response.json()));
+      
+      // Check if all results are successful
+      const allSuccessful = results.every(result => result.isSuccess);
+      
+      if (allSuccessful) {
         setSuccess('Sales Category data saved successfully!');
         setCurrentStep(3);
       } else {
-        throw new Error(result.message || 'Failed to submit sales category data');
+        throw new Error('Failed to submit sales category data for one or more categories');
       }
     } catch (err) {
       setError(err.message);
@@ -215,10 +273,34 @@ const ReportEntryPage = () => {
       }
     } catch (err) {
       setError(err.message);
-    } finally {
-      setLoading(false);
+    } finally {      setLoading(false);
     }
-  };  const resetForm = () => {
+  };  
+  
+  // Helper function to update sales category data and calculate margin
+  const updateSalesCategoryData = (categoryId, field, value) => {
+    setSalesCategoryData(prevData => {
+      const updatedCategories = prevData.categories.map(category => {
+        if (category.id === categoryId) {
+          const updatedCategory = { ...category, [field]: value };
+          
+          // Auto-calculate margin when revenue or hpp changes
+          if (field === 'revenue' || field === 'hpp') {
+            const revenue = parseFloat(field === 'revenue' ? value : updatedCategory.revenue) || 0;
+            const hpp = parseFloat(field === 'hpp' ? value : updatedCategory.hpp) || 0;
+            updatedCategory.margin = revenue > 0 ? ((revenue - hpp) / revenue) * 100 : 0;
+          }
+          
+          return updatedCategory;
+        }
+        return category;
+      });
+      
+      return { ...prevData, categories: updatedCategories };
+    });
+  };
+
+  const resetForm = () => {
     setCurrentStep(1);
     setTrafficData({
       shift1: {
@@ -231,12 +313,8 @@ const ReportEntryPage = () => {
         transaction: '',
         description: ''
       }
-    });
-    setSalesCategoryData({
-      salesCategoryId: '',
-      amount: '',
-      quantity: '',
-      description: ''
+    });    setSalesCategoryData({
+      categories: [] // Will be re-populated when sales categories are fetched
     });
     setOperationalCostData({
       operationalCostTypeId: '',
@@ -250,19 +328,56 @@ const ReportEntryPage = () => {
     setSuccess(null);
     
     if (currentStep === 1) {
-      // Validate traffic data for both shifts
-      if (!trafficData.shift1.customerCount || !trafficData.shift1.transaction ||
-          !trafficData.shift2.customerCount || !trafficData.shift2.transaction) {
-        setError('Please fill in required fields for both Shift 1 and Shift 2 (Customer Count and Transaction)');
+      // Validate traffic data - at least one shift must have data
+      const shift1HasData = (trafficData.shift1.customerCount && trafficData.shift1.transaction);
+      const shift2HasData = (trafficData.shift2.customerCount && trafficData.shift2.transaction);
+      
+      if (!shift1HasData && !shift2HasData) {
+        setError('Please fill in Customer Count and Transaction for at least one shift');
         return;
       }
-      submitTrafficData();
-    } else if (currentStep === 2) {
-      // Validate sales category data
-      if (!salesCategoryData.salesCategoryId || !salesCategoryData.amount) {
-        setError('Please fill in required fields');
+      
+      // Check for incomplete data in filled shifts
+      if (trafficData.shift1.customerCount && !trafficData.shift1.transaction) {
+        setError('Please fill in Transaction for Shift 1');
         return;
       }
+      if (trafficData.shift1.transaction && !trafficData.shift1.customerCount) {
+        setError('Please fill in Customer Count for Shift 1');
+        return;
+      }
+      if (trafficData.shift2.customerCount && !trafficData.shift2.transaction) {
+        setError('Please fill in Transaction for Shift 2');
+        return;
+      }
+      if (trafficData.shift2.transaction && !trafficData.shift2.customerCount) {
+        setError('Please fill in Customer Count for Shift 2');
+        return;
+      }
+      
+      submitTrafficData();    } else if (currentStep === 2) {
+      // Validate sales category data - at least one category must have complete data
+      const categoriesWithData = salesCategoryData.categories.filter(category => 
+        category.qtyTerjual && category.revenue && category.hpp
+      );
+      
+      if (categoriesWithData.length === 0) {
+        setError('Please fill in Qty Terjual, Revenue, and HPP for at least one category');
+        return;
+      }
+      
+      // Check for incomplete data in partially filled categories
+      const hasIncompleteData = salesCategoryData.categories.some(category => {
+        const hasAnyData = category.qtyTerjual || category.revenue || category.hpp;
+        const hasCompleteData = category.qtyTerjual && category.revenue && category.hpp;
+        return hasAnyData && !hasCompleteData;
+      });
+      
+      if (hasIncompleteData) {
+        setError('Please complete all fields (Qty Terjual, Revenue, HPP) for categories that have data');
+        return;
+      }
+      
       submitSalesCategoryData();
     } else if (currentStep === 3) {
       // Validate operational cost data
@@ -319,7 +434,7 @@ const ReportEntryPage = () => {
             month: 'long', 
             day: 'numeric' 
           })}</p>
-          <p className="shift-note"><strong>Note:</strong> Please fill data for both shifts</p>
+          <p className="shift-note"><strong>Note:</strong> Please fill data for at least one shift. Both Customer Count and Transaction are required for each shift you want to submit.</p>
         </div>
         
         {/* Shift 1 Form */}
@@ -454,63 +569,80 @@ const ReportEntryPage = () => {
       </div>
     );
   };
-
   const renderSalesCategoryForm = () => (
     <div className="form-section">
       <h3>Sales Category Data</h3>
-      <div className="form-grid">
-        <div className="form-group">
-          <label htmlFor="salesCategoryId">Sales Category *</label>
-          <select
-            id="salesCategoryId"
-            value={salesCategoryData.salesCategoryId}
-            onChange={(e) => setSalesCategoryData({...salesCategoryData, salesCategoryId: e.target.value})}
-            required
-          >
-            <option value="">Select a category</option>
-            {salesCategories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.categoryName}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="amount">Amount *</label>
-          <input
-            type="number"
-            step="0.01"
-            id="amount"
-            value={salesCategoryData.amount}
-            onChange={(e) => setSalesCategoryData({...salesCategoryData, amount: e.target.value})}
-            placeholder="Enter amount"
-            required
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="quantity">Quantity</label>
-          <input
-            type="number"
-            id="quantity"
-            value={salesCategoryData.quantity}
-            onChange={(e) => setSalesCategoryData({...salesCategoryData, quantity: e.target.value})}
-            placeholder="Enter quantity"
-          />
-        </div>
-        
-        <div className="form-group full-width">
-          <label htmlFor="salesDescription">Description</label>
-          <textarea
-            id="salesDescription"
-            value={salesCategoryData.description}
-            onChange={(e) => setSalesCategoryData({...salesCategoryData, description: e.target.value})}
-            placeholder="Enter description"
-            rows="3"
-          />
-        </div>
+      <div className="current-date-info">
+        <p><strong>Date:</strong> {new Date().toLocaleDateString('id-ID', { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        })}</p>
+        <p className="shift-note"><strong>Note:</strong> Please fill data for at least one category. All fields (Qty Terjual, Revenue, HPP) are required for each category you want to submit.</p>
       </div>
+      
+      {salesCategoryData.categories.map((category, index) => (
+        <div key={category.id} className="category-section">
+          <h4 className="category-title">
+            {category.nameCategory === 'Makanan' ? '🍽️' : '🥤'} {category.nameCategory}
+          </h4>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor={`qtyTerjual-${category.id}`}>Qty Terjual *</label>
+              <input
+                type="number"
+                id={`qtyTerjual-${category.id}`}
+                value={category.qtyTerjual}
+                onChange={(e) => updateSalesCategoryData(category.id, 'qtyTerjual', e.target.value)}
+                placeholder="Enter quantity sold"
+                min="0"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor={`revenue-${category.id}`}>Revenue (Total Sales) *</label>
+              <input
+                type="number"
+                step="0.01"
+                id={`revenue-${category.id}`}
+                value={category.revenue}
+                onChange={(e) => updateSalesCategoryData(category.id, 'revenue', e.target.value)}
+                placeholder="Enter total revenue"
+                min="0"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor={`hpp-${category.id}`}>HPP (Cost of Goods Sold) *</label>
+              <input
+                type="number"
+                step="0.01"
+                id={`hpp-${category.id}`}
+                value={category.hpp}
+                onChange={(e) => updateSalesCategoryData(category.id, 'hpp', e.target.value)}
+                placeholder="Enter cost of goods sold"
+                min="0"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor={`margin-${category.id}`}>Margin % (Auto-calculated)</label>
+              <input
+                type="text"
+                id={`margin-${category.id}`}
+                value={`${category.margin.toFixed(2)}%`}
+                disabled
+                style={{
+                  backgroundColor: '#f8f9fa',
+                  color: '#6c757d',
+                  cursor: 'not-allowed'
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 
