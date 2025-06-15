@@ -6,17 +6,18 @@ const ReportEntryPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-
-  // Form data states
+  const [success, setSuccess] = useState(null);  // Form data states
   const [trafficData, setTrafficData] = useState({
-    date: new Date().toISOString().split('T')[0],
-    totalVisitors: '',
-    newCustomers: '',
-    returningCustomers: '',
-    averageSessionDuration: '',
-    conversionRate: '',
-    bounceRate: ''
+    shift1: {
+      customerCount: '',
+      transaction: '',
+      description: ''
+    },
+    shift2: {
+      customerCount: '',
+      transaction: '',
+      description: ''
+    }
   });
 
   const [salesCategoryData, setSalesCategoryData] = useState({
@@ -61,7 +62,6 @@ const ReportEntryPage = () => {
       console.error('Failed to fetch sales categories:', err);
     }
   };
-
   const fetchOperationalCostTypes = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -87,25 +87,62 @@ const ReportEntryPage = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/traffic-and-customer`, {
+      const currentDate = new Date().toISOString().split('T')[0];
+      
+      // Prepare data for both shifts
+      const shift1Data = {
+        timeShift: "Shift 1 (07:00-15:00)",
+        customerCount: parseInt(trafficData.shift1.customerCount),
+        transaction: parseInt(trafficData.shift1.transaction),
+        description: trafficData.shift1.description,
+        date: currentDate,
+        conversionRate: trafficData.shift1.customerCount && trafficData.shift1.transaction 
+          ? ((parseFloat(trafficData.shift1.transaction) / parseFloat(trafficData.shift1.customerCount)) * 100).toFixed(2)
+          : 0
+      };
+
+      const shift2Data = {
+        timeShift: "Shift 2 (15:00-23:00)",
+        customerCount: parseInt(trafficData.shift2.customerCount),
+        transaction: parseInt(trafficData.shift2.transaction),
+        description: trafficData.shift2.description,
+        date: currentDate,
+        conversionRate: trafficData.shift2.customerCount && trafficData.shift2.transaction 
+          ? ((parseFloat(trafficData.shift2.transaction) / parseFloat(trafficData.shift2.customerCount)) * 100).toFixed(2)
+          : 0
+      };
+      
+      // Submit both shifts
+      const response1 = await fetch(`${API_BASE_URL}/traffic-and-customer`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(trafficData)
+        body: JSON.stringify(shift1Data)
       });
 
-      if (!response.ok) {
+      const response2 = await fetch(`${API_BASE_URL}/traffic-and-customer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(shift2Data)
+      });
+
+      if (!response1.ok || !response2.ok) {
         throw new Error('Failed to submit traffic data');
       }
 
-      const result = await response.json();
-      if (result.success) {
-        setSuccess('Traffic and Customer data saved successfully!');
+      const result1 = await response1.json();
+      const result2 = await response2.json();
+      
+      if (result1.success && result2.success) {
+        setSuccess('Both shifts traffic and customer data saved successfully!');
         setCurrentStep(2);
       } else {
-        throw new Error(result.message || 'Failed to submit traffic data');
+        throw new Error('Failed to submit traffic data for one or both shifts');
       }
     } catch (err) {
       setError(err.message);
@@ -181,18 +218,19 @@ const ReportEntryPage = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const resetForm = () => {
+  };  const resetForm = () => {
     setCurrentStep(1);
     setTrafficData({
-      date: new Date().toISOString().split('T')[0],
-      totalVisitors: '',
-      newCustomers: '',
-      returningCustomers: '',
-      averageSessionDuration: '',
-      conversionRate: '',
-      bounceRate: ''
+      shift1: {
+        customerCount: '',
+        transaction: '',
+        description: ''
+      },
+      shift2: {
+        customerCount: '',
+        transaction: '',
+        description: ''
+      }
     });
     setSalesCategoryData({
       salesCategoryId: '',
@@ -207,16 +245,15 @@ const ReportEntryPage = () => {
     });
     setSuccess(null);
     setError(null);
-  };
-
-  const handleNext = () => {
+  };const handleNext = () => {
     setError(null);
     setSuccess(null);
     
     if (currentStep === 1) {
-      // Validate traffic data
-      if (!trafficData.totalVisitors || !trafficData.newCustomers) {
-        setError('Please fill in required fields');
+      // Validate traffic data for both shifts
+      if (!trafficData.shift1.customerCount || !trafficData.shift1.transaction ||
+          !trafficData.shift2.customerCount || !trafficData.shift2.transaction) {
+        setError('Please fill in required fields for both Shift 1 and Shift 2 (Customer Count and Transaction)');
         return;
       }
       submitTrafficData();
@@ -262,96 +299,161 @@ const ReportEntryPage = () => {
         </div>
       </div>
     </div>
-  );
+  );  const renderTrafficForm = () => {
+    // Calculate conversion rates automatically for both shifts
+    const shift1ConversionRate = trafficData.shift1.customerCount && trafficData.shift1.transaction 
+      ? ((parseFloat(trafficData.shift1.transaction) / parseFloat(trafficData.shift1.customerCount)) * 100).toFixed(2)
+      : 0;
 
-  const renderTrafficForm = () => (
-    <div className="form-section">
-      <h3>Traffic and Customer Data</h3>
-      <div className="form-grid">
-        <div className="form-group">
-          <label htmlFor="date">Date *</label>
-          <input
-            type="date"
-            id="date"
-            value={trafficData.date}
-            onChange={(e) => setTrafficData({...trafficData, date: e.target.value})}
-            required
-          />
+    const shift2ConversionRate = trafficData.shift2.customerCount && trafficData.shift2.transaction 
+      ? ((parseFloat(trafficData.shift2.transaction) / parseFloat(trafficData.shift2.customerCount)) * 100).toFixed(2)
+      : 0;
+
+    return (
+      <div className="form-section">
+        <h3>Traffic and Customer Data</h3>
+        <div className="current-date-info">
+          <p><strong>Date:</strong> {new Date().toLocaleDateString('id-ID', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          })}</p>
+          <p className="shift-note"><strong>Note:</strong> Please fill data for both shifts</p>
         </div>
         
-        <div className="form-group">
-          <label htmlFor="totalVisitors">Total Visitors *</label>
-          <input
-            type="number"
-            id="totalVisitors"
-            value={trafficData.totalVisitors}
-            onChange={(e) => setTrafficData({...trafficData, totalVisitors: e.target.value})}
-            placeholder="Enter total visitors"
-            required
-          />
+        {/* Shift 1 Form */}
+        <div className="shift-section">
+          <h4 className="shift-title">🌅 Shift 1 (07:00-15:00)</h4>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="shift1CustomerCount">Customer Count *</label>
+              <input
+                type="number"
+                id="shift1CustomerCount"
+                value={trafficData.shift1.customerCount}
+                onChange={(e) => setTrafficData({
+                  ...trafficData, 
+                  shift1: {...trafficData.shift1, customerCount: e.target.value}
+                })}
+                placeholder="Enter number of customers"
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="shift1Transaction">Transaction *</label>
+              <input
+                type="number"
+                id="shift1Transaction"
+                value={trafficData.shift1.transaction}
+                onChange={(e) => setTrafficData({
+                  ...trafficData, 
+                  shift1: {...trafficData.shift1, transaction: e.target.value}
+                })}
+                placeholder="Enter number of transactions"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="shift1ConversionRate">Conversion Rate (Auto-calculated)</label>
+              <input
+                type="text"
+                id="shift1ConversionRate"
+                value={`${shift1ConversionRate}%`}
+                disabled
+                style={{
+                  backgroundColor: '#f8f9fa',
+                  color: '#6c757d',
+                  cursor: 'not-allowed'
+                }}
+              />
+            </div>
+            
+            <div className="form-group full-width">
+              <label htmlFor="shift1Description">Note (Shift 1)</label>
+              <textarea
+                id="shift1Description"
+                value={trafficData.shift1.description}
+                onChange={(e) => setTrafficData({
+                  ...trafficData, 
+                  shift1: {...trafficData.shift1, description: e.target.value}
+                })}
+                placeholder="Enter notes for Shift 1"
+                rows="2"
+              />
+            </div>
+          </div>
         </div>
-        
-        <div className="form-group">
-          <label htmlFor="newCustomers">New Customers *</label>
-          <input
-            type="number"
-            id="newCustomers"
-            value={trafficData.newCustomers}
-            onChange={(e) => setTrafficData({...trafficData, newCustomers: e.target.value})}
-            placeholder="Enter new customers count"
-            required
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="returningCustomers">Returning Customers</label>
-          <input
-            type="number"
-            id="returningCustomers"
-            value={trafficData.returningCustomers}
-            onChange={(e) => setTrafficData({...trafficData, returningCustomers: e.target.value})}
-            placeholder="Enter returning customers count"
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="averageSessionDuration">Avg Session Duration (minutes)</label>
-          <input
-            type="number"
-            step="0.1"
-            id="averageSessionDuration"
-            value={trafficData.averageSessionDuration}
-            onChange={(e) => setTrafficData({...trafficData, averageSessionDuration: e.target.value})}
-            placeholder="Enter average session duration"
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="conversionRate">Conversion Rate (%)</label>
-          <input
-            type="number"
-            step="0.01"
-            id="conversionRate"
-            value={trafficData.conversionRate}
-            onChange={(e) => setTrafficData({...trafficData, conversionRate: e.target.value})}
-            placeholder="Enter conversion rate"
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="bounceRate">Bounce Rate (%)</label>
-          <input
-            type="number"
-            step="0.01"
-            id="bounceRate"
-            value={trafficData.bounceRate}
-            onChange={(e) => setTrafficData({...trafficData, bounceRate: e.target.value})}
-            placeholder="Enter bounce rate"
-          />
+
+        {/* Shift 2 Form */}
+        <div className="shift-section">
+          <h4 className="shift-title">🌙 Shift 2 (15:00-23:00)</h4>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="shift2CustomerCount">Customer Count *</label>
+              <input
+                type="number"
+                id="shift2CustomerCount"
+                value={trafficData.shift2.customerCount}
+                onChange={(e) => setTrafficData({
+                  ...trafficData, 
+                  shift2: {...trafficData.shift2, customerCount: e.target.value}
+                })}
+                placeholder="Enter number of customers"
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="shift2Transaction">Transaction *</label>
+              <input
+                type="number"
+                id="shift2Transaction"
+                value={trafficData.shift2.transaction}
+                onChange={(e) => setTrafficData({
+                  ...trafficData, 
+                  shift2: {...trafficData.shift2, transaction: e.target.value}
+                })}
+                placeholder="Enter number of transactions"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="shift2ConversionRate">Conversion Rate (Auto-calculated)</label>
+              <input
+                type="text"
+                id="shift2ConversionRate"
+                value={`${shift2ConversionRate}%`}
+                disabled
+                style={{
+                  backgroundColor: '#f8f9fa',
+                  color: '#6c757d',
+                  cursor: 'not-allowed'
+                }}
+              />
+            </div>
+            
+            <div className="form-group full-width">
+              <label htmlFor="shift2Description">Note (Shift 2)</label>
+              <textarea
+                id="shift2Description"
+                value={trafficData.shift2.description}
+                onChange={(e) => setTrafficData({
+                  ...trafficData, 
+                  shift2: {...trafficData.shift2, description: e.target.value}
+                })}
+                placeholder="Enter notes for Shift 2"
+                rows="2"
+              />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderSalesCategoryForm = () => (
     <div className="form-section">

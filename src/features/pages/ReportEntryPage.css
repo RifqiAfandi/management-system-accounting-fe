@@ -111,12 +111,33 @@
   margin-bottom: 20px;
 }
 
+/* Form Section Styles */
 .form-section h3 {
-  font-size: 1.5rem;
   color: #333;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Current Date Info Styles */
+.current-date-info {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
   margin-bottom: 25px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #f8f9fa;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.current-date-info p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.current-date-info strong {
+  font-weight: 600;
 }
 
 /* Form Grid */
@@ -241,6 +262,40 @@
 .success-message p {
   margin: 0;
   font-weight: 500;
+}
+
+/* Shift Section Styles */
+.shift-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  background: #f8f9fa;
+}
+
+.shift-title {
+  font-size: 1.3rem;
+  color: #495057;
+  margin: 0 0 20px 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shift-note {
+  color: #17a2b8 !important;
+  font-weight: 500;
+  margin: 5px 0 0 0;
+}
+
+.conversion-note {
+  text-align: center;
+  margin-top: 20px;
+  padding: 15px;
+  background: #fff3cd;
+  border-radius: 8px;
+  border: 1px solid #ffeaa7;
 }
 
 /* Responsive Design */
