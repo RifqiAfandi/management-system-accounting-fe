@@ -163,14 +163,6 @@
   transition: max-height var(--transition-normal);
 }
 
-.submenu.closed {
-  max-height: 0;
-}
-
-.submenu.open {
-  max-height: 200px;
-}
-
 .submenu-button {
   width: 100%;
   background: none;
