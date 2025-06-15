@@ -121,9 +121,6 @@ const LoginPage = ({ onLoginSuccess }) => {
                 Password
               </label>
               <div className="input-container">
-                <div className="input-icon">
-                  {renderIcon('lock')}
-                </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   id="password"
@@ -169,19 +166,11 @@ const LoginPage = ({ onLoginSuccess }) => {
                 </>
               ) : (
                 <>
-                  {renderIcon('log-in')}
                   <span>Sign In</span>
                 </>
               )}
             </button>
           </form>
-
-          {/* Footer */}
-          <div className="login-footer">
-            <p className="footer-text">
-              Secure access to your management dashboard
-            </p>
-          </div>
         </div>
       </div>
     </div>
