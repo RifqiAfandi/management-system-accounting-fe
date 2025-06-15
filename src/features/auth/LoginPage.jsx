@@ -161,7 +161,6 @@ const LoginPage = ({ onLoginSuccess }) => {
             >
               {loading ? (
                 <>
-                  <div className="loading-spinner"></div>
                   <span>Signing In...</span>
                 </>
               ) : (

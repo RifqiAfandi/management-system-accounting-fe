@@ -267,45 +267,7 @@
   box-shadow: none;
 }
 
-/* Loading Spinner */
-.loading-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: white;
-  animation: spin 1s ease-in-out infinite;
-}
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Footer */
-.login-footer {
-  text-align: center;
-}
-
-.footer-text {
-  color: var(--neutral-500);
-  font-size: 0.8rem;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-xs);
-}
-
-.footer-text::before {
-  content: '';
-  width: 16px;
-  height: 16px;
-  background: var(--success-color);
-  border-radius: 50%;
-  flex-shrink: 0;
-}
 
 /* Responsive Design */
 @media (max-width: 480px) {
