@@ -154,6 +154,10 @@
   display: none;
 }
 
+.admin-sidebar.hidden .submenu {
+  display: none;
+}
+
 /* Dropdown Submenu */
 .submenu {
   background: var(--neutral-800);

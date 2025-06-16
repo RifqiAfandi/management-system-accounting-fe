@@ -19,17 +19,29 @@ const NavigationMenu = ({
     return openDropdowns.has(key);
   };
 
+  // Handle dropdown toggle with auto-navigation to first item
+  const handleDropdownToggle = (item) => {
+    const isCurrentlyOpen = isDropdownOpen(item.key);
+    
+    // Toggle the dropdown
+    onToggleDropdown(item.key);
+    
+    // If opening the dropdown and there are submenu items, navigate to the first one
+    if (!isCurrentlyOpen && item.submenu && item.submenu.length > 0) {
+      onTabClick(item.submenu[0].key);
+    }
+  };
+
   return (
     <nav className="sidebar-nav">
       <ul className="nav-list">
         {navigationItems.map((item) => (
           <li key={item.key} className="nav-item">            {item.hasDropdown ? (
-              <>
-                <button
+              <>                <button
                   className={`nav-button ${
                     isAnySubmenuActive(item) ? "active" : ""
                   }`}
-                  onClick={() => onToggleDropdown(item.key)}
+                  onClick={() => handleDropdownToggle(item)}
                 >
                   {renderIcon(item.icon)}
                   <span className="nav-text">{item.label}</span>

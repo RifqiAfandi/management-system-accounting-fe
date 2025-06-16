@@ -12,9 +12,14 @@ const AdminDashboard = ({ user, onLogout }) => {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
-
   const toggleSidebar = () => {
-    setIsSidebarVisible(!isSidebarVisible);
+    const newSidebarState = !isSidebarVisible;
+    setIsSidebarVisible(newSidebarState);
+    
+    // Close all dropdowns when sidebar is collapsed
+    if (!newSidebarState) {
+      setOpenDropdowns(new Set());
+    }
   };
   const toggleDropdown = (dropdownKey) => {
     setOpenDropdowns(prev => {
