@@ -4,6 +4,7 @@ import ReportEntryPage from "../pages/ReportEntryPage.jsx";
 import {
   TrafficAndCustomerPage,
   SalesCategoryPage,
+  PaymentMethodPage,
   OperationalCostPage,
   PerformanceSummaryPage,
 } from "../pages/otherPages.jsx";
@@ -14,11 +15,12 @@ const ContentRenderer = ({ activeTab }) => {
       case "Home":
         return <HomePage />;
       case "ReportEntry":
-        return <ReportEntryPage />;
-      case "TrafficAndCustomer":
+        return <ReportEntryPage />;      case "TrafficAndCustomer":
         return <TrafficAndCustomerPage />;
       case "SalesCategory":
         return <SalesCategoryPage />;
+      case "PaymentMethod":
+        return <PaymentMethodPage />;
       case "OperationalCost":
         return <OperationalCostPage />;
       case "PerformanceSummary":

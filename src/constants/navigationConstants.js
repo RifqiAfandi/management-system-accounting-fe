@@ -10,8 +10,7 @@ export const navigationItems = [
     label: "Report Entry",
     icon: "edit",
     hasDropdown: false,
-  },
-  {
+  },  {
     key: "DailyReport",
     label: "Daily Report",
     icon: "report",
@@ -25,6 +24,11 @@ export const navigationItems = [
       {
         key: "SalesCategory",
         label: "Sales By Category",
+        icon: "report",
+      },
+      {
+        key: "PaymentMethod",
+        label: "Payment Method",
         icon: "report",
       },
       {
