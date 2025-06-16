@@ -5,10 +5,10 @@ import { renderIcon } from "../../utils/iconUtils.jsx";
 const Sidebar = ({
   activeTab,
   isSidebarVisible,
-  isUserDropdownOpen,
+  openDropdowns,
   onTabClick,
   onToggleSidebar,
-  onToggleUserDropdown,
+  onToggleDropdown,
   onLogout,
 }) => {
   return (
@@ -23,12 +23,11 @@ const Sidebar = ({
         </button>
       </div>
 
-      {/* Navigation Menu */}
-      <NavigationMenu
+      {/* Navigation Menu */}      <NavigationMenu
         activeTab={activeTab}
-        isUserDropdownOpen={isUserDropdownOpen}
+        openDropdowns={openDropdowns}
         onTabClick={onTabClick}
-        onToggleUserDropdown={onToggleUserDropdown}
+        onToggleDropdown={onToggleDropdown}
       />
 
       {/* Logout Section */}

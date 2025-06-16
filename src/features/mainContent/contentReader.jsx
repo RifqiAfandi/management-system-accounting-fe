@@ -22,21 +22,20 @@ const ContentRenderer = ({ activeTab }) => {
       case "PaymentMethod":
         return <PaymentMethodPage />;
       case "OperationalCost":
-        return <OperationalCostPage />;
-      case "PerformanceSummary":
+        return <OperationalCostPage />;      case "PerformanceSummary":
         return <PerformanceSummaryPage />;
-      case "WeeklyReport":
+      case "LabaRugi":
         return (
           <div className="welcome-card">
-            <h2>Weekly Report</h2>
-            <p className="welcome-text">Weekly report functionality coming soon...</p>
+            <h2>Laba Rugi</h2>
+            <p className="welcome-text">Laporan Laba Rugi functionality coming soon...</p>
           </div>
         );
-      case "MonthlyReport":
+      case "Neraca":
         return (
           <div className="welcome-card">
-            <h2>Monthly Report</h2>
-            <p className="welcome-text">Monthly report functionality coming soon...</p>
+            <h2>Neraca</h2>
+            <p className="welcome-text">Laporan Neraca functionality coming soon...</p>
           </div>
         );
       default:

@@ -42,17 +42,22 @@ export const navigationItems = [
         icon: "report",
       },
     ],
-  },
-  {
-    key: "WeeklyReport",
-    label: "Weekly Report",
-    icon: "calendar",
-    hasDropdown: false,
-  },
-  {
-    key: "MonthlyReport",
-    label: "Monthly Report",
-    icon: "calendarMonth",
-    hasDropdown: false,
+  },  {
+    key: "Laporan",
+    label: "Laporan",
+    icon: "document",
+    hasDropdown: true,
+    submenu: [
+      {
+        key: "LabaRugi",
+        label: "Laba Rugi",
+        icon: "report",
+      },
+      {
+        key: "Neraca",
+        label: "Neraca",
+        icon: "report",
+      },
+    ],
   },
 ];

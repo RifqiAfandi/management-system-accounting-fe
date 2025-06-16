@@ -4,34 +4,42 @@ import { navigationItems } from "../../constants/navigationConstants.js";
 
 const NavigationMenu = ({
   activeTab,
-  isUserDropdownOpen,
+  openDropdowns,
   onTabClick,
-  onToggleUserDropdown,
+  onToggleDropdown,
 }) => {
-  const isUserTabActive = (tab) => {
-    return activeTab === "Users" || activeTab === "CreateUser" || activeTab === "UserList";
+  // Check if any submenu item is active for a parent dropdown
+  const isAnySubmenuActive = (item) => {
+    if (!item.submenu) return false;
+    return item.submenu.some(subItem => activeTab === subItem.key);
+  };
+
+  // Check if dropdown is open
+  const isDropdownOpen = (key) => {
+    return openDropdowns.has(key);
   };
 
   return (
     <nav className="sidebar-nav">
       <ul className="nav-list">
         {navigationItems.map((item) => (
-          <li key={item.key} className="nav-item">
-            {item.hasDropdown ? (
+          <li key={item.key} className="nav-item">            {item.hasDropdown ? (
               <>
                 <button
-                  className={`nav-button ${isUserTabActive() ? "active" : ""}`}
-                  onClick={onToggleUserDropdown}
+                  className={`nav-button ${
+                    isAnySubmenuActive(item) ? "active" : ""
+                  }`}
+                  onClick={() => onToggleDropdown(item.key)}
                 >
                   {renderIcon(item.icon)}
                   <span className="nav-text">{item.label}</span>
                   <span
                     className={`dropdown-icon ${
-                      isUserDropdownOpen ? "open" : ""
+                      isDropdownOpen(item.key) ? "open" : ""
                     }`}
                   >
                     {renderIcon(
-                      isUserDropdownOpen ? "chevronDown" : "chevronRight"
+                      isDropdownOpen(item.key) ? "chevronDown" : "chevronRight"
                     )}
                   </span>
                 </button>
@@ -39,10 +47,10 @@ const NavigationMenu = ({
                 {/* Dropdown Submenu */}
                 <div
                   className={`submenu ${
-                    isUserDropdownOpen ? "open" : "closed"
+                    isDropdownOpen(item.key) ? "open" : "closed"
                   }`}
                 >
-                  {item.submenu.map((subItem) => (
+                  {item.submenu?.map((subItem) => (
                     <button
                       key={subItem.key}
                       className={`submenu-button ${
