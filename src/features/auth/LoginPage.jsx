@@ -92,7 +92,7 @@ const LoginPage = ({ onLoginSuccess }) => {
           </div>
 
           {/* Form */}
-          <form className="login-form" onSubmit={handleSubmit}>            {/* Email/Username Field */}
+          <form className="login-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="email" className="form-label">
                 Email or Username
