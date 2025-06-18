@@ -41,23 +41,11 @@ const ReportEntryPage = () => {
   const [operationalCostTypes, setOperationalCostTypes] = useState([]);
   const [paymentTypes, setPaymentTypes] = useState([]);
 
-  const API_BASE_URL = 'http://localhost:3000/api';
-  // Fetch dropdown data on component mount
-  useEffect(() => {    fetchSalesCategories();
+  const API_BASE_URL = 'http://localhost:3000/api';  // Fetch dropdown data on component mount
+  useEffect(() => {
+    fetchSalesCategories();
     fetchOperationalCostTypes();
     fetchPaymentTypes();
-    
-    // Re-initialize operational cost data when types are fetched
-    if (operationalCostTypes.length > 0) {
-      setOperationalCostData({
-        costs: operationalCostTypes.map(type => ({
-          operationalCostTypeId: type.id,
-          operationalCostName: type.operationalCostName,
-          amount: '',
-          description: ''
-        }))
-      });
-    }
   }, []);
   const fetchSalesCategories = async () => {
     try {
@@ -100,12 +88,11 @@ const ReportEntryPage = () => {
         if (result.success) {
           const types = result.data || [];
           setOperationalCostTypes(types);
-          
-          // Initialize operational cost data with empty values for each type
+            // Initialize operational cost data with empty values for each type
           setOperationalCostData({
             costs: types.map(type => ({
               operationalCostTypeId: type.id,
-              operationalCostName: type.operationalCostName,
+              operationalCostName: type.name, // Backend returns 'name', not 'operationalCostName'
               amount: '',
               description: ''
             }))
@@ -1063,54 +1050,70 @@ const ReportEntryPage = () => {
         </div>
       </div>
     );
-  };
-  const renderOperationalCostForm = () => (
-    <div className="form-section">
-      <h3>Operational Cost Data</h3>
-      <div className="current-date-info">
-        <p><strong>Date:</strong> {new Date().toLocaleDateString('id-ID', { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
-        })}</p>
-        <p className="shift-note"><strong>Note:</strong> Please enter amounts for operational cost types. At least one cost type must have an amount to proceed.</p>
-      </div>
-      
-      {operationalCostData.costs.map((cost, index) => (
-        <div key={cost.operationalCostTypeId} className="category-section">
-          <h4 className="category-title">
-            💰 {cost.operationalCostName}
-          </h4>
-          <div className="form-grid">
-            <div className="form-group">
-              <label htmlFor={`amount-${cost.operationalCostTypeId}`}>Amount (Rp) *</label>
-              <input
-                type="number"
-                step="0.01"
-                id={`amount-${cost.operationalCostTypeId}`}
-                value={cost.amount}
-                onChange={(e) => updateOperationalCostData(cost.operationalCostTypeId, 'amount', e.target.value)}
-                placeholder="Enter amount"
-                min="0"
-              />
-            </div>
-            
-            <div className="form-group full-width">
-              <label htmlFor={`description-${cost.operationalCostTypeId}`}>Description</label>
-              <textarea
-                id={`description-${cost.operationalCostTypeId}`}
-                value={cost.description}
-                onChange={(e) => updateOperationalCostData(cost.operationalCostTypeId, 'description', e.target.value)}
-                placeholder="Enter description (optional)"
-                rows="2"
-              />
-            </div>
-          </div>
+  };  const renderOperationalCostForm = () => {
+    return (
+      <div className="form-section">
+        <h3>Operational Cost Data</h3>
+        <div className="current-date-info">
+          <p><strong>Date:</strong> {new Date().toLocaleDateString('id-ID', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          })}</p>
+          <p className="shift-note"><strong>Note:</strong> Please enter amounts for operational cost types. At least one cost type must have an amount to proceed.</p>
         </div>
-      ))}
-    </div>
-  );
+          {operationalCostData.costs && operationalCostData.costs.length > 0 ? (
+          operationalCostData.costs.map((cost, index) => (
+            <div key={cost.operationalCostTypeId} className="category-section">
+              <h4 className="category-title" style={{ 
+                fontSize: '1.2rem', 
+                marginBottom: '1rem', 
+                color: '#0066cc',
+                borderBottom: '2px solid #0066cc',
+                paddingBottom: '0.5rem'
+              }}>
+                💰 {cost.operationalCostName || 'Unnamed Cost Type'}
+              </h4>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label htmlFor={`amount-${cost.operationalCostTypeId}`}>
+                    Amount (Rp) * - {cost.operationalCostName}
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    id={`amount-${cost.operationalCostTypeId}`}
+                    value={cost.amount}
+                    onChange={(e) => updateOperationalCostData(cost.operationalCostTypeId, 'amount', e.target.value)}
+                    placeholder={`Enter amount for ${cost.operationalCostName}`}
+                    min="0"
+                  />
+                </div>
+                
+                <div className="form-group full-width">
+                  <label htmlFor={`description-${cost.operationalCostTypeId}`}>
+                    Description - {cost.operationalCostName}
+                  </label>
+                  <textarea
+                    id={`description-${cost.operationalCostTypeId}`}
+                    value={cost.description}
+                    onChange={(e) => updateOperationalCostData(cost.operationalCostTypeId, 'description', e.target.value)}
+                    placeholder={`Enter description for ${cost.operationalCostName} (optional)`}
+                    rows="2"
+                  />
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="loading-message">
+            <p>Loading operational cost types...</p>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const handleLoginRedirect = () => {
     localStorage.removeItem('token');
