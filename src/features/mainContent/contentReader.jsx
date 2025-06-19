@@ -7,7 +7,6 @@ import {
   SalesCategoryPage,
   PaymentMethodPage,
   OperationalCostPage,
-  PerformanceSummaryPage,
 } from "../pages/otherPages.jsx";
 
 const ContentRenderer = ({ activeTab }) => {
@@ -21,10 +20,8 @@ const ContentRenderer = ({ activeTab }) => {
       case "SalesCategory":
         return <SalesCategoryPage />;
       case "PaymentMethod":
-        return <PaymentMethodPage />;
-      case "OperationalCost":
-        return <OperationalCostPage />;      case "PerformanceSummary":
-        return <PerformanceSummaryPage />;
+        return <PaymentMethodPage />;      case "OperationalCost":
+        return <OperationalCostPage />;
       case "LabaRugi":
         return (
           <div className="welcome-card">

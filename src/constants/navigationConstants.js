@@ -30,15 +30,9 @@ export const navigationItems = [
         key: "PaymentMethod",
         label: "Payment Method",
         icon: "report",
-      },
-      {
+      },      {
         key: "OperationalCost",
         label: "Operational Cost",
-        icon: "report",
-      },
-      {
-        key: "PerformanceSummary",
-        label: "Performance Summary",
         icon: "report",
       },
     ],

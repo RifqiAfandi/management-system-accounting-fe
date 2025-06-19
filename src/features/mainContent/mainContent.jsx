@@ -14,11 +14,8 @@ const MainContent = ({ activeTab, user }) => {  const getHeaderTitle = (tab) => 
       case "SalesCategory":
         return "Sales by Category";
       case "PaymentMethod":
-        return "Payment Method Breakdown";
-      case "OperationalCost":
+        return "Payment Method Breakdown";      case "OperationalCost":
         return "Operational Cost";
-      case "PerformanceSummary":
-        return "Performance Summary";
       case "WeeklyReport":
         return "Weekly Report";
       case "MonthlyReport":
