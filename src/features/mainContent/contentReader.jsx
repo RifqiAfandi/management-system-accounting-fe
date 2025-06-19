@@ -1,6 +1,7 @@
 import React from "react";
 import HomePage from "../pages/homePages.jsx";
 import ReportEntryPage from "../pages/ReportEntryPage.jsx";
+import BalanceSheetPage from "../pages/BalanceSheetPage.jsx";
 import {
   TrafficAndCustomerPage,
   SalesCategoryPage,
@@ -30,14 +31,8 @@ const ContentRenderer = ({ activeTab }) => {
             <h2>Laba Rugi</h2>
             <p className="welcome-text">Laporan Laba Rugi functionality coming soon...</p>
           </div>
-        );
-      case "Neraca":
-        return (
-          <div className="welcome-card">
-            <h2>Neraca</h2>
-            <p className="welcome-text">Laporan Neraca functionality coming soon...</p>
-          </div>
-        );
+        );      case "Neraca":
+        return <BalanceSheetPage />;
       default:
         return (
           <div className="welcome-card">
